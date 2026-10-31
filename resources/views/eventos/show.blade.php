@@ -10,6 +10,7 @@
     <!-- Formulario de perguntas -->
     <div class="col-md-5 mb-4">
         <div class="bg-gray-800 rounded-lg shadow-lg p-4 mb-4">
+
             <h4 class="text-xl font-bold text-white mb-4">
                 Faça sua Pergunta
             </h4>
@@ -63,6 +64,7 @@
                 >
                     Enviar Pergunta
                 </button>
+
             </form>
         </div>
     </div>
@@ -95,7 +97,7 @@
                     </span>
                 </div>
 
-                <div class="flex justify-between items-center text-gray-400 text-sm">
+                <div class="flex justify-between items-center text-gray-400 text-sm mb-3">
 
                     <span>
                         Status: {{ $pergunta->status }}
@@ -106,6 +108,27 @@
                     </span>
 
                 </div>
+
+                <!-- Sprint 05 - Exclusao protegida -->
+                @can('delete', $pergunta)
+
+                    <form
+                        action="{{ route('perguntas.destroy', $pergunta->id) }}"
+                        method="POST"
+                        class="mt-3"
+                        onsubmit="return confirm('Deseja realmente excluir esta pergunta?');"
+                    >
+                        @csrf
+                        @method('DELETE')
+
+                        <x-danger-button>
+                            Excluir Pergunta
+                        </x-danger-button>
+
+                    </form>
+
+                @endcan
+
             </div>
 
         @empty
