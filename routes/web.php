@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\PerguntaController;
+use App\Http\Controllers\ModeracaoController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 // Rotas protegidas por autenticacao
 Route::middleware('auth')->group(function () {
 
+    // Criacao de eventos
     Route::get('/eventos/create', [EventoController::class, 'create'])
         ->name('eventos.create');
 
@@ -20,10 +22,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/perguntas/{pergunta}', [EventoController::class, 'destroyPergunta'])
         ->name('perguntas.destroy');
 
-    // Sprint 06 - Votar ou retirar voto
+    // Sprint 06 - Sistema de votos
     Route::post('/perguntas/{pergunta}/votar', [PerguntaController::class, 'votar'])
         ->name('perguntas.votar');
 
+    // Sprint 07 - Registrar denuncia
+    Route::post('/perguntas/{pergunta}/moderar', [ModeracaoController::class, 'store'])
+        ->name('moderacoes.store');
+
+    // Sprint 07 - Fila de moderacao
+    Route::get('/eventos/{evento}/moderacoes', [ModeracaoController::class, 'index'])
+        ->name('moderacoes.index');
+
+    // Sprint 07 - Aprovar ou rejeitar denuncia
+    Route::patch('/moderacoes/{moderacao}/status', [ModeracaoController::class, 'updateStatus'])
+        ->name('moderacoes.updateStatus');
 });
 
 // Rotas publicas
