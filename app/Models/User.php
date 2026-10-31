@@ -1,8 +1,8 @@
+
 <?php
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,8 +16,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -27,8 +25,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -37,8 +33,6 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -48,9 +42,19 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relacionamento entre usuario e eventos.
+     */
     public function eventos(): HasMany
     {
         return $this->hasMany(Evento::class);
     }
 
+    /**
+     * Sprint 02 - Relacionamento entre usuario e perguntas.
+     */
+    public function perguntas(): HasMany
+    {
+        return $this->hasMany(Pergunta::class);
+    }
 }

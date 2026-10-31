@@ -4,9 +4,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EventoFormRequest;
+use App\Http\Requests\StorePerguntaRequest;
 use App\Models\Evento;
 use App\Models\Pergunta;
-use App\Http\Requests\StorePerguntaRequest;
 use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
@@ -23,6 +23,7 @@ class EventoController extends Controller
         $evento = Evento::findOrFail($id);
 
         $perguntas = Pergunta::where('evento_id', $evento->id)
+            ->with('user')
             ->latest()
             ->paginate(10);
 

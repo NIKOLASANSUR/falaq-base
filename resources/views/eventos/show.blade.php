@@ -6,7 +6,7 @@
 @section('content')
 <div class="row">
 
-    <!-- Formulário de envio de pergunta -->
+    <!-- Formulário de envio de perguntas -->
     <div class="col-md-5 mb-4">
         <div class="card shadow-sm p-3">
             <h4 class="fw-bold mb-3">Faça sua Pergunta</h4>
@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <!-- Perguntas do evento -->
+    <!-- Lista de perguntas -->
     <div class="col-md-7">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold m-0">Perguntas do Evento</h4>
@@ -64,8 +64,14 @@
         @forelse($perguntas as $pergunta)
             <div class="card mb-3 shadow-sm border-start border-4 border-primary">
                 <div class="card-body">
+
                     <p class="fs-5 mb-2 text-white">
                         {{ $pergunta->texto }}
+                    </p>
+
+                    <!-- Autor da pergunta -->
+                    <p class="text-secondary small mb-2">
+                        Autor: {{ $pergunta->user->name ?? 'Anônimo' }}
                     </p>
 
                     <div class="d-flex justify-content-between align-items-center text-secondary small">
@@ -85,7 +91,7 @@
             </div>
         @endforelse
 
-        <!-- Botões de paginação -->
+        <!-- Navegação entre páginas -->
         <div class="d-flex justify-content-center mt-4">
             {{ $perguntas->links() }}
         </div>
