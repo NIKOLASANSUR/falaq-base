@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Models;
@@ -5,12 +6,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pergunta extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['evento_id', 'texto', 'status', 'user_id', 'is_public'];
+    protected $fillable = [
+        'evento_id',
+        'texto',
+        'status',
+        'user_id',
+        'is_public',
+    ];
 
     public function evento(): BelongsTo
     {
@@ -20,5 +28,14 @@ class Pergunta extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Sprint 06 - Relacionamento de votos
+    public function votos(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'pergunta_user'
+        )->withTimestamps();
     }
 }
