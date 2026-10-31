@@ -5,6 +5,16 @@
 
 @section('content')
 
+@php
+    // Verifica as perguntas votadas pelo usuario logado
+    $perguntasVotadas = auth()->check()
+        ? auth()->user()->perguntasVotadas()
+            ->whereIn('perguntas.id', $perguntas->pluck('id'))
+            ->pluck('perguntas.id')
+            ->toArray()
+        : [];
+@endphp
+
 <div class="row">
 
     <!-- Formulario de perguntas -->
@@ -74,7 +84,7 @@
 
         <div class="flex justify-between items-center mb-4">
             <h4 class="text-xl font-bold text-white">
-                Perguntas do Evento
+                Ranking de Perguntas
             </h4>
 
             <span class="text-gray-400 text-sm">
@@ -86,10 +96,12 @@
 
             <div class="bg-gray-800 border-l-4 border-blue-500 rounded-lg shadow-md p-4 mb-4">
 
+                <!-- Conteudo da pergunta -->
                 <p class="text-white text-lg mb-3">
                     {{ $pergunta->texto }}
                 </p>
 
+                <!-- Autor da pergunta -->
                 <div class="text-gray-400 text-sm mb-3">
                     Autor:
                     <span class="font-semibold text-blue-400">
@@ -97,6 +109,58 @@
                     </span>
                 </div>
 
+                <!-- Quantidade de votos -->
+                <div class="flex items-center mb-3">
+                    <span class="text-blue-400 font-bold text-lg">
+                        👍 {{ $pergunta->votos_count }}
+                    </span>
+
+                    <span class="text-gray-400 text-sm ml-2">
+                        {{ $pergunta->votos_count == 1 ? 'voto' : 'votos' }}
+                    </span>
+                </div>
+
+                <!-- Botao de votar -->
+                @auth
+
+                    @php
+                        $jaVotou = in_array(
+                            $pergunta->id,
+                            $perguntasVotadas
+                        );
+                    @endphp
+
+                    <form
+                        action="{{ route('perguntas.votar', $pergunta) }}"
+                        method="POST"
+                        class="mb-3"
+                    >
+                        @csrf
+
+                        <button
+                            type="submit"
+                            class="{{ $jaVotou
+                                ? 'bg-green-600 hover:bg-green-700'
+                                : 'bg-blue-600 hover:bg-blue-700'
+                            }} text-white px-4 py-2 rounded-md font-semibold transition-colors"
+                        >
+                            @if($jaVotou)
+                                ✓ Remover Voto
+                            @else
+                                👍 Votar
+                            @endif
+                        </button>
+                    </form>
+
+                @else
+
+                    <p class="text-gray-400 text-sm mb-3">
+                        Faça login para votar nesta pergunta.
+                    </p>
+
+                @endauth
+
+                <!-- Informacoes da pergunta -->
                 <div class="flex justify-between items-center text-gray-400 text-sm mb-3">
 
                     <span>
@@ -109,7 +173,7 @@
 
                 </div>
 
-                <!-- Sprint 05 - Exclusao protegida -->
+                <!-- Exclusao protegida - Sprint 05 -->
                 @can('delete', $pergunta)
 
                     <form
