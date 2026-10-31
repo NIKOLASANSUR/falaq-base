@@ -22,7 +22,9 @@ class EventoController extends Controller
     {
         $evento = Evento::findOrFail($id);
 
+        // Sprint 03 - Exibir apenas perguntas publicas
         $perguntas = Pergunta::where('evento_id', $evento->id)
+            ->where('is_public', true)
             ->with('user')
             ->latest()
             ->paginate(10);
