@@ -25,9 +25,12 @@ class EventoController extends Controller
     {
         $evento = Evento::findOrFail($id);
 
+        // Sprint 06 - Ranking por numero de votos
         $perguntas = Pergunta::where('evento_id', $evento->id)
             ->where('is_public', true)
             ->with('user')
+            ->withCount('votos')
+            ->orderByDesc('votos_count')
             ->latest()
             ->paginate(10);
 
@@ -40,12 +43,14 @@ class EventoController extends Controller
 
         Pergunta::create([
             'evento_id' => $evento->id,
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::id(),
             'texto' => $request->input('texto'),
             'status' => 'pendente',
+            'is_public' => false,
         ]);
 
-        return redirect()->route('eventos.show', $evento->id)
+        return redirect()
+            ->route('eventos.show', $evento->id)
             ->with('sucesso', 'Sua pergunta foi enviada com sucesso!');
     }
 
@@ -74,6 +79,7 @@ class EventoController extends Controller
             $request->validated()
         );
 
-        return redirect()->route('eventos.show', $evento->id);
+        return redirect()
+            ->route('eventos.show', $evento->id);
     }
 }
