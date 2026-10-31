@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\EventoController;
+use App\Http\Controllers\PerguntaController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +16,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/eventos', [EventoController::class, 'store'])
         ->name('eventos.store');
 
-    // Sprint 05 - Exclusao protegida de perguntas
+    // Sprint 05 - Exclusao de perguntas
     Route::delete('/perguntas/{pergunta}', [EventoController::class, 'destroyPergunta'])
         ->name('perguntas.destroy');
+
+    // Sprint 06 - Votar ou retirar voto
+    Route::post('/perguntas/{pergunta}/votar', [PerguntaController::class, 'votar'])
+        ->name('perguntas.votar');
+
 });
 
 // Rotas publicas
@@ -27,7 +33,7 @@ Route::get('/', [EventoController::class, 'index'])
 Route::get('/eventos/{id}', [EventoController::class, 'show'])
     ->name('eventos.show');
 
-// Sprint 03 - Envio de perguntas com autenticacao
+// Envio de perguntas exige login
 Route::post('/eventos/{id}/perguntas', [EventoController::class, 'storePergunta'])
     ->middleware('auth')
     ->name('eventos.perguntas.store');
