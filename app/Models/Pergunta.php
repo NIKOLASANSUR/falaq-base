@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pergunta extends Model
 {
@@ -20,11 +21,13 @@ class Pergunta extends Model
         'is_public',
     ];
 
+    // Relacionamento com o evento
     public function evento(): BelongsTo
     {
         return $this->belongsTo(Evento::class);
     }
 
+    // Relacionamento com o autor
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -37,5 +40,11 @@ class Pergunta extends Model
             User::class,
             'pergunta_user'
         )->withTimestamps();
+    }
+
+    // Sprint 07 - Relacionamento com moderacoes
+    public function moderacoes(): HasMany
+    {
+        return $this->hasMany(Moderacao::class);
     }
 }
