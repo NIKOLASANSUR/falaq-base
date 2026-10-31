@@ -7,10 +7,13 @@ use App\Http\Requests\EventoFormRequest;
 use App\Http\Requests\StorePerguntaRequest;
 use App\Models\Evento;
 use App\Models\Pergunta;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         $eventos = Evento::all();
@@ -22,7 +25,6 @@ class EventoController extends Controller
     {
         $evento = Evento::findOrFail($id);
 
-        // Sprint 03 - Exibir apenas perguntas publicas
         $perguntas = Pergunta::where('evento_id', $evento->id)
             ->where('is_public', true)
             ->with('user')
@@ -45,6 +47,20 @@ class EventoController extends Controller
 
         return redirect()->route('eventos.show', $evento->id)
             ->with('sucesso', 'Sua pergunta foi enviada com sucesso!');
+    }
+
+    // Sprint 05 - Exclusao protegida por Policy
+    public function destroyPergunta(Pergunta $pergunta)
+    {
+        $this->authorize('delete', $pergunta);
+
+        $eventoId = $pergunta->evento_id;
+
+        $pergunta->delete();
+
+        return redirect()
+            ->route('eventos.show', $eventoId)
+            ->with('sucesso', 'Pergunta excluida com sucesso!');
     }
 
     public function create()
